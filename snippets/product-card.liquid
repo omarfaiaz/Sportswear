@@ -1,0 +1,31 @@
+{% assign product_collections = product_item.collections %}
+{% assign item_collection = product_collections.first %}
+{% assign selected_variant = product_item.selected_or_first_available_variant %}
+<div class="grid-item">
+    <div class="grid-item-top relative group">
+        <a href="{{ product_item.url }}"><img
+        src="{{ product_item.featured_image.src |  image_url }}"
+        alt=""
+        class="object-cover"
+        /></a>
+
+        {% form 'product', product_item %}
+            <input
+            type="hidden"
+            name="id"
+            value="{{ selected_variant.id }}">  
+            
+            <div class="product-quantity">
+              <label for="quantity" class="hidden">Quantity</label>
+              <input type="hidden" name="quantity" id="quantity" value="1">
+            </div>
+
+            <button class="g-add-cart-btn absolute hidden bottom-0 left-0 w-full py-4 cursor-pointer text-center group-hover:block" type="submit">Add to Cart</button>
+        {% endform %}
+    </div>
+    <div class="grid-item-bottom pt-7 pb-4">
+        <span class="g-item-cat">{{ item_collection.title }}</span>
+        <h4 class="g-item-title pt-4 pb-3"><a href="{{ product_item.url }}">{{ product_item.title }}</a></h4>
+        <span class="g-item-price">{{ product_item.price |  money}}</span>
+    </div>
+</div>

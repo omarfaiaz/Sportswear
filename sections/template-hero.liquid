@@ -1,0 +1,53 @@
+<!-- Hero Starts -->
+<section
+class="hero py-36 bg-cover bg-center bg-no-repeat"
+style="background-image: url('{{ section.settings.hero_bg |  image_url }}')"
+>
+<div class="container mx-auto px-3 xl:px-0">
+  <div class="hero-inner flex flex-col md:flex-row">
+    <div class="hero-col-left w-full lg:w-1/2">
+      <h1>{{ section.settings.heading}}</h1>
+      <p class="mt-5 mb-16">
+        {{section.settings.para}}
+      </p>
+
+      <a href="{{ section.settings.btn_url }}" class="btn">Shop Now</a>
+    </div>
+
+    <div class="hero-col-right w-full md:w-1/2"></div>
+  </div>
+</div>
+</section>
+
+<!-- Hero Ends -->
+
+{% schema %}
+    {
+        "name": "hero",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "hero_bg",
+                "label": "Upload Background Image"
+            },
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Add Heading",
+                "default": "DISCOVER YOUR SPORTY EDGE"
+            },
+            {
+                "type":"textarea",
+                "id": "para",
+                "label": "Add Contents",
+                "default": "Get the best sports apparel with the best offer that you can afford. Available for worldwide shipping and free delivery order."
+
+            },
+            {
+                "type": "url",
+                "id": "btn_url",
+                "label": "Add button URL"
+            }
+        ]
+    }
+{% endschema %}

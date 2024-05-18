@@ -1,0 +1,69 @@
+<!-- Blog Grid Starts -->
+    
+<section id="post-grid" class="pt-10 pb-20">
+    <div class="container mx-auto px-3 xl:px-0">
+      <div
+        class="grid-header flex-col flex md:flex-row justify-between border-b border-b-black-20 py-4 md:pb-7"
+      >
+        <div class="grid-header_left flex gap-5">
+          <h3>Latest Updates</h3>
+        </div>
+        <div class="grid-header_right">
+          <h4>
+            <a href="#" class="btn-link"
+              >See All Articles <i class="fa-solid fa-arrow-right-long"></i
+            ></a>
+          </h4>
+        </div>
+      </div>
+
+      <div
+        class="grid-articles grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 pt-16"
+      >
+        
+        
+        {% for article in blogs[ section.settings.blog_type ].articles %}
+            <div class="article-item">
+                <div
+                    class="a-item-top bg-cover bg-center bg-no-repeat min-h-96 relative"
+                    style="background-image: url('{{ article.image | image_url }}')"
+                >
+                    <div
+                    class="a-item-meta text-center absolute top-4 right-4 p-5 bg-white"
+                    >
+                    <p class="">
+                        <strong>{{ article.published_at | date: "%-d" }}</strong> {{ article.published_at | date: "%b" }}<br />
+                        {{ article.published_at | date: "%Y" }}
+                    </p>
+                    </div>
+                </div>
+
+                <h4 class="pt-10 pb-4">
+                    <a href="#"></a> {{ article.title }}
+                </h4>
+                <span>{{ article.author  }}</span>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Grid Ends -->
+
+  {% schema %}
+    {
+        "name":"Post Grid",
+        "settings": [
+            {
+                "type": "blog",
+                "id": "blog_type",
+                "label": "Select Blog"
+            }
+        ],
+        "presets": [
+            {
+                "name": "Post Grid"
+            }
+        ]
+    }
+  {% endschema %}

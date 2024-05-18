@@ -1,0 +1,65 @@
+<!-- Featured Catagory Starts -->
+
+<section id="featurd-categories" class="py-12">
+    <div class="container mx-auto px-3 xl:px-0">
+        <div class="categories-inner flex gap-5 flex-col md:flex-row">
+        <div
+            class="featured-new w-full md:w-1/2 p-16 bg-cover bg-right bg-no-repeat"
+            style="background-image: url('{{ section.settings.left-cat_bg | image_url  }}')"
+        >
+            <div class="featured-new_content w-2/3">
+            <span>NEW UP!</span>
+            <h3 class="mt-5 mb-4">UNLEASH YOUR<br />POTENTIAL</h3>
+            <p class="mb-12">
+                Explore our wide range of high-quality sportswear.
+            </p>
+            <h4>
+                <a href="#" class="btn-link"
+                >Shop Now <i class="fa-solid fa-arrow-right-long"></i
+                ></a>
+            </h4>
+            </div>
+        </div>
+        <div
+            class="featured-top w-full text-white md:w-1/2 p-16 bg-cover bg-right bg-no-repeat"
+            style="background-image: url('{{ section.settings.right-cat_bg | image_url  }}')"
+        >
+            <span class="text-white">OUR BEST</span>
+            <h3 class="mt-5 mb-4 text-white">
+            STAY AHEAD<br />
+            OF THE GAME 
+            </h3>
+            <p class="mb-12 text-white">
+            Upgrade your workout with our collection.
+            </p>
+            <h4>
+            <a href="#" class="btn-link text-white"
+                >Explore More <i class="fa-solid fa-arrow-right-long"></i
+            ></a>
+            </h4>
+        </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Category Ends -->
+
+{% schema %}
+    {
+        "name": "Featured Categories",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "left-cat_bg",
+                "label": "Add background for the left category"
+            },{
+                "type": "image_picker",
+                "id": "right-cat_bg",
+                "label": "Add background for the right category"
+            }
+        ],
+        "presets": [{
+            "name": "Featured Categories"
+        }]
+    }
+{% endschema %}

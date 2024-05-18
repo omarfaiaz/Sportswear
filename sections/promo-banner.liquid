@@ -1,0 +1,39 @@
+ <!-- Promo Banner Starts -->
+ <section id="promo-banner">
+  <div class="container mx-auto px-3 xl:px-0">
+    <div
+      class="promo-content-wrapper bg-contain bg-center bg-no-repeat p-12 relative md:p-28"
+      style="background-image: url('{{ section.settings.promo_bg | image_url }}')"
+    >
+      <div class="promo-content w-full xl:w-1/2 text-white relative z-50">
+        <h2>UNLOCK YOUR BEST SELF</h2>
+        <p class="mt-4 mb-16">
+          Elevate your style on and off the field with our fashionable
+          sportswear. 40% Off for 15-30 July only.
+        </p>
+        <h4>
+          <a href="#" class="btn-link"
+            >Shop Now <i class="fa-solid fa-arrow-right-long"></i
+          ></a>
+        </h4>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Promo Banner Ends -->
+
+{% schema %}
+  {
+      "name": "Promo Banner",
+      "settings": [
+          {
+              "type": "image_picker",
+              "id": "promo_bg",
+              "label": "Upload Promo Banner"
+          }
+      ],
+      "presets": [{
+          "name": "Promo Banner"
+      }]
+  }
+{% endschema %}

@@ -1,0 +1,172 @@
+{% assign main_menu_linklist  = linklists[section.settings.menu].links %}
+<header>
+    <div class="container mx-auto px-3 xl:px-0">
+      <div
+        class="header-top md:flex-row flex-col justify-between border-b border-b-black-20 py-5 hidden lg:flex"
+      >
+        <div class="address-info md:w-1/3">
+          <span
+            ><i class="fa-solid fa-location-dot"></i> {{ section.settings.address }} </span
+          >
+        </div>
+        <div class="app-ext md:w-1/3 text-right">
+          <span>US |</span>
+          <span>EN |</span>
+          <span>Track Your Order</span>
+        </div>
+      </div>
+
+      <div class="main-header flex justify-between py-10">
+        <div class="menu-left w-1/3 hidden md:block">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input
+            type="text"
+            name="search"
+            id=""
+            placeholder="Enter your search keywords ..."
+          />
+        </div>
+        <div class="menu-center w-1/3 flex justify-center">
+          <img
+            src="{{ section.settings.logo |  image_url: width:300 }}"
+            alt="logo"
+            class="logo object-contain"
+          />
+         
+         
+        </div>
+        <div class="menu-right w-1/3 text-right">
+
+        <a href="{{ routes.account_url }}"><i class="fa-regular fa-user"></i> SIGN IN |</a>
+           
+          <a href="{{ routes.cart_url }}"><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-header text-white">
+      <div class="container mx-auto px-3 xl:px-0">
+        <div
+          class="bottom-header-elements py-8 flex relative"
+          x-data="{ categoryPanel: false, panel_1: false,panel_2: false }"
+        >
+          <div class="header-menu-items w-full lg:w-2/3 flex gap-8 lg:gap-16">
+            <div class="header-categories-wrapper w-1/3">
+              <div
+                class="header-categories flex gap-2 cursor-pointer"
+                @click="categoryPanel = !categoryPanel
+                ;
+                panel_1 = false;
+                panel_2: false
+                "
+                ;
+              >
+                <i class="fa-solid fa-bars"></i>
+                <h5 class="text-white hidden md:block">Browse Categories</h5>
+                <i class="fa-solid fa-chevron-down hidden md:block"></i>
+              </div>
+            </div>
+
+            <div
+              class="header-links flex w-2/3 gap-3 lg:gap-16 justify-end lg:justify-start"
+            >
+            {% for link in main_menu_linklist %}
+              <a href="{{ link.url }}" class="text-white">{{ link.title }}</a>
+            {% endfor %}
+              
+              
+            </div>
+          </div>
+
+          <div
+            class="header-contact w-1/3 hidden lg:flex lg:gap-2 lg:items-center lg:justify-end"
+          >
+            <i class="fa-solid fa-phone"></i>
+            <a href="#" class="text-white"
+              >{{ section.settings.phone}}</a
+            >
+          </div>
+
+          <!-- Category Panel -->
+          {% assign cat_menu = linklists.category-menu.links %}
+          <div
+            class="header-category_links absolute top-full left-0 w-full overflow-y-auto z-10 flex flex-col items-start lg:flex-row"
+            x-show="categoryPanel"
+            x-collapse.duration.500ms
+          >
+            <div class="cat-panel_left w-1/3 shadow-md bg-white">
+              <ul id="category-link_list">
+                
+                
+                  {% for link in cat_menu %}
+                    <li class="category-link" @mouseover="panel_{{ forloop.index  }} = true" @mouseleave="panel_{{ forloop.index  }} = false" >
+                      <a href="{{ link.url }}">{{ link.title }}</a>
+                    </li>
+                  {% endfor %}
+               
+               
+              </ul>
+            </div>
+
+            <div
+              class="cat-panel_right p-16 min-h-vh w-2/3 shadow-xl bg-white"
+              x-show="panel_1"
+              @mouseover="panel_1 = true"
+              @mouseleave ="panel_1 = false"
+              x-transition:enter="transition ease-out duration-200 transform"
+              x-transition:enter-start="opacity-0 -translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              x-transition:leave="transition ease-out duration-200"
+              x-transition:leave-start="opacity-100"
+              x-transition:leave-end="opacity-0"
+            >
+              <div class="panel-one grid grid-cols-1 lg:grid-cols-2">
+                <div class="panel-one_left">
+                  <h4>Football Accessories</h4>
+                  <ul class="sub-menu_links">
+                    <li><a href="#">Shoe</a></li>
+                    <li><a href="#">Socks</a></li>
+                    <li><a href="#">Shirt</a></li>
+                    <li><a href="#">Shorts</a></li>
+                  </ul>
+                </div>
+
+                <div class="panel-one_right bg-gray-300"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</header>
+
+{% schema %}
+  {
+    "name":"Header",
+    "settings": [
+      {
+      "type": "text",
+      "id": "address",
+      "label": "Add your location",
+      "default":"XYZ street, London, Uk"
+    },
+    {
+      "type" : "image_picker",
+      "id": "logo",
+      "label": "Add your Logo here"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Select a menu"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Add phone number",
+      "default": "Customer Care: +1 (312) 555-1234"
+    }
+  ]
+
+  }
+{% endschema %}

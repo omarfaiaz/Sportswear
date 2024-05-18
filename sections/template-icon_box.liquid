@@ -1,0 +1,64 @@
+<!-- Icon Box -->
+<section id="icon-box" class="py-10">
+    <div class="container mx-auto px-3 xl:px-0">
+        <div
+            class="icon-box-wrapper flex flex-col gap-5 justify-between lg:flex-row"
+        >
+        {% for item in section.blocks %}
+            <div class="box-item flex items-start gap-5">
+                <div class="box-item-icon">
+                    {{ item.settings.box-icon }}
+                    </div>
+                    <div class="box-item-content">
+                        <h4 class="mb-3">{{ item.settings.box-heading }}</h4>
+                        <p>
+                            {{ item.settings.box-content }}
+                        </p>
+                    </div>
+            </div>
+        {% endfor %}
+            
+
+            
+        </div>
+    </div>
+</section>
+<!-- Icon Box Ends -->
+
+{% schema %}
+    {
+        "name":"Icon Box",
+        "blocks": [
+          {
+            "name": "Icon Box",
+            "type": "icon-box",
+            "limit": 3,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "box-heading",
+                    "label": "Add Box Heading",
+                    "default": "Box Heading"
+                },
+                {
+                    "type": "text",
+                    "id": "box-icon",
+                    "label": "Add Box icon",
+                    "default": "<i class='fa-solid fa-globe'></i>"
+                },
+                {
+                    "type": "textarea",
+                    "id": "box-content",
+                    "label": "Add Box Content",
+                    "default": "Doesn’t matter wherever you are, you will always get your order."
+                }
+            ]
+          }
+        ],
+        "presets": [
+            {
+                "name": "Icon Box"
+            }
+        ]
+    }
+{% endschema %}

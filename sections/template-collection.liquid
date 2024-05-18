@@ -1,0 +1,612 @@
+
+  
+<section id="breadcrumb" class="border-b py-6">
+  <div class="container mx-auto">
+    <div class="breadcrump-wrapper">
+      <ul class="flex gap-2">
+        <li class="opacity-50"><i class="fa-solid fa-house"></i> Home |</li>
+        <li>Products</li>
+        <li>Collection</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="product-list" class="pt-16 pb-20 px-3 lg:px-0">
+  <div class="container mx-auto">
+    <div class="product-list_top">
+      <h2>Products</h2>
+    </div>
+
+    <div class="product-list_main flex flex-col lg:flex-row gap-8">
+      <div class="product-list_filters w-full lg:w-3/12 hidden lg:block">
+        
+
+        {% comment %} Filter {% endcomment %}
+        <form>
+          {%- for filter in collection.filters -%}
+
+            
+            <div class="filter-box pt-12">
+                <div>
+                  <h4>{{ filter.label }}</h4>
+                </div>
+            
+              <div class="filter-items_wrapper border-b pb-10">
+                
+                {%- case filter.type -%}
+                  {%- when 'boolean' -%}
+                    <ul class="filter-items pt-8">
+                        <li>
+                          <label for="Filter-{{ filter.param_name }}-{{ filter.true_value.value }}">
+                          <input type="checkbox"
+                            name="{{ filter.param_name }}"
+                            value="{{ filter.true_value.value }}"
+                            id="Filter-{{ filter.param_name }}"
+                            {% if filter.true_value.active -%}checked{%- endif %}
+                            {% if filter.true_value.count == 0 and filter.true_value.active == false -%}disabled{%- endif -%}
+                          >{{ filter.true_value.label }}</label>
+                        </li>
+                        <li>
+                          <label for="Filter-{{ filter.param_name }}-{{ filter.false_value.value }}">
+                          <input type="checkbox"
+                            name="{{ filter.param_name }}"
+                            value="{{ filter.false_value.value }}"
+                            id="Filter-{{ filter.param_name }}"
+                            {% if filter.false_value.active -%}checked{%- endif %}
+                            {% if filter.false_value.count == 0 and filter.false_value.active == false -%}disabled{%- endif %}
+                          >{{ filter.false_value.label }}</label>
+                        </li>
+                    </ul>
+
+                    <div>
+                      <input type="submit" value="Apply" class="mt-4 red-bg color-white px-5 py-2 rounded w-auto inline-block cursor-pointer">
+                    </div>
+                  {%- when 'list' -%}
+
+                    {% if filter.param_name == 'filter.v.option.size' %}
+                      <ul class="filter-items filter-checkbox pt-8 flex flex-wrap gap-3">
+                        {%- for filter_value in filter.values -%}
+                          <li class="border cursor-pointer filter-label_box" id="">
+                            <span>{{ filter_value.label }}</span>
+                            <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
+                            <input type="checkbox"
+                              name="{{ filter_value.param_name }}"
+                              value="{{ filter_value.value }}"
+                              id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                              {% if filter_value.active -%}checked{%- endif %}
+                              {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                            >
+                          </li>
+                          
+                        {%- endfor -%}
+                        
+                      </ul>
+
+                    {% else %}
+                      <ul class="filter-items pt-8">
+                        {%- for filter_value in filter.values -%}
+                          <li>
+                            <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
+                            <input type="checkbox"
+                              name="{{ filter_value.param_name }}"
+                              value="{{ filter_value.value }}"
+                              id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                              {% if filter_value.active -%}checked{%- endif %}
+                              {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                            >
+                              <span>
+                                {%- case filter_value.display.type -%}
+
+                                  {%- when 'colors' -%}
+                                  
+                                    {% liquid
+                                      assign size_limit = filter_value.display.value.size | at_most: 8
+                                      assign rotation = '0deg'
+                                      if size_limit == 2
+                                        assign rotation = '45deg'
+                                      endif
+
+                                      assign angle_increment = 360 | divided_by: size_limit
+                                      assign angle = 0
+                                    %}
+                                    {%- capture conic_gradient -%}
+                                      {%- for color in filter_value.display.value limit: size_limit -%}
+                                        {{ color }} {{ angle }}deg{%- assign angle = angle | plus: angle_increment %} {{ angle }}deg{%- unless forloop.last %}, {%- endunless -%}
+                                      {%- endfor -%}
+                                    {%- endcapture -%}
+                                    <span style="
+                                      width: 25px;
+                                      height: 25px;
+                                      border-radius: 50%;
+                                      display: flex;
+                                      justify-content: center;
+                                      align-items: center;
+                                      background: conic-gradient({{ conic_gradient }}); transform: rotateZ({{ rotation }});
+                                    "></span>
+                                  {%- when 'image' -%}
+                                    {{
+                                      filter_value.display.value
+                                      | image_url: width: 25
+                                      | image_tag: alt: filter_value.display.value.alt
+                                    }}
+                                  {%- else -%}
+                                    <span class="visual-display__child"></span>
+                                {%- endcase -%}
+                              </span>
+                              {{ filter_value.label }}
+                            </label>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+
+                    {% endif %}
+
+                  
+                    <div>
+                      <input type="submit" value="Apply" class="mt-4 red-bg color-white px-5 py-2 rounded w-auto inline-block cursor-pointer">
+                      
+                 
+                      {%- if filter.active_values.size > 0 -%}
+                        <p class="mt-4 color-red bg-white px-5 py-2 rounded w-auto inline-block cursor-default border border-red-600 ml-2"><a href="{{ filter.url_to_remove }}" class="color-red">Reset</a></p>
+                      {%- endif -%}
+             
+                    </div>
+                  {%- when 'price_range' -%}
+                    <div class="filter-group-display__price-range">
+                      <div class="filter-group-display__price-range-from">
+                      
+                        <div class="price-range_wrapper pt-10">
+                          <div id="slider-range" class="relative"></div>
+                          
+                          <div class="price-range_controller relative">
+                            <label for="Filter-{{ filter.min_value.param_name }}"></label>
+                            <input name="{{ filter.min_value.param_name }}"
+                              id="Filter-{{ filter.min_value.param_name }}" class="min_slider top-1 absolute left-0 color-red"
+                              {% if filter.min_value.value -%}
+                                value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                              {%- endif %}
+                              type="number"
+                              placeholder="0"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            >
+
+                            
+                            <label for="Filter-{{ filter.max_value.param_name }}" class=""></label>
+                              <input name="{{ filter.max_value.param_name }}"
+                              id="Filter-{{ filter.max_value.param_name }}" class="max_slider color-red absolute top-1 right-0 text-right"
+                              {% if filter.max_value.value -%}
+                                value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                              {%- endif %}
+                              type="number"
+                              placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              data-max-value="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            >
+                          </div>
+                          
+                      </div> 
+
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div class="filter-group-display__submit">
+                      <input type="submit" value="Apply" class="mt-10 red-bg color-white px-5 py-2 rounded w-auto inline-block cursor-pointer">
+
+                      
+                      </div>
+
+                      {%- if filter.active_values.size > 0 -%}
+                        <p class="mt-4 color-red bg-white px-5 py-2 rounded w-auto inline-block cursor-default border border-red-600 ml-2"><a href="{{ filter.url_to_remove }}" class="color-red">Reset</a></p>
+                      {%- endif -%}
+                    </div>
+                    
+                {%- endcase -%}
+              </div>
+              </div>
+          {%- endfor -%}
+
+          <div>
+            <p><a href="{{ collection.url }}?sort_by={{ collection.sort_by }}">Clear all</a></p>
+
+            {%- for filter in collection.filters -%}
+              {%- if filter.type == "price_range" -%}
+                {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                  <p>
+                    <a href="{{ filter.url_to_remove }}">
+                      {%- assign min_value = filter.min_value.value | default: 0 -%}
+                      {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+                      {{ min_value | money }} - {{ max_value | money }} X
+                    </a>
+                  </p>
+                {%- endif -%}
+              {%- else -%}
+                {%- for filter_value in filter.active_values -%}
+                  <p>
+                    <a href="{{ filter_value.url_to_remove }}">
+                      {{ filter.label }}: {{ filter_value.label }} X
+                    </a>
+                  </p>
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </form>
+
+      </div>
+
+      <div class="grid-product-list_wrapper w-full lg:w-9/12">
+        <div
+          class="grid-header flex-col flex gap-3 md:flex-row justify-between border-b border-b-black-20 py-4 md:pb-7"
+        >
+          <div class="grid-header_left flex items-center gap-5">
+            <h6>Showing 1 - 15 of 150 results.</h6>
+          </div>
+          <div class="grid-header_right flex gap-3 items-center">
+            <h6 class="inline">Sort By</h6>
+
+            {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+
+            <div class="collection__sort" x-data="{
+                sort: '{{ sort_by }}',
+                sortCollection() {
+                  fetch('/collections/{{ collection.handle }}?sort_by=' + this.sort)
+                  .then(response => response.text())
+                  .then(data => {
+                    let html_div = document.createElement('div');
+                    html_div.innerHTML = data;
+
+                    let html_dom = html_div.querySelector('#ProductGridContainer').innerHTML;
+                    document.querySelector('#ProductGridContainer').innerHTML = html_dom;
+                    // update url without refreshing the page 
+                    history.replaceState(null, null, '?sort_by=' + this.sort);
+                    })
+                    .catch(error => console.error('Error', error));
+                }
+            }">
+                <select id="sort-by" @change="sortCollection()" x-model="sort" class="border p-2 lg:py-2 lg:px-3 border-gray-600">
+                    {% for option in collection.sort_options %}
+                        <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>
+                            {{ option.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+
+
+            <p class="lg:hidden mob-filter_btn color-red">
+              <i class="fa-solid fa-filter"></i> Filters
+            </p>
+          </div>
+        </div>
+
+
+        <div id="ProductGridContainer">
+          {% paginate collection.products by 12 %}
+            <div
+              class="grid-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 pt-16" 
+            >
+              {% assign vendor = 'Reebook' %}
+              {% for product in collection.products %}
+               
+                {% comment %} {% if product.vendor == 'Gladiator' %} {% endcomment %}
+                  {% render 'product-card', product_item: product %} 
+                {% comment %} {% endif %} {% endcomment %}
+                                
+              {% endfor %}
+                                                
+            </div>
+            {% if paginate.pages > 1 %}
+              {{ paginate | default_pagination }}
+            {% endif %}
+    
+          {% endpaginate %}
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<section
+  id="mobile-filters"
+  class="fixed bottom-0 left-0 w-full h-56 p-8 border-r-6 bg-white overflow-y-auto shadow-lg z-50 lg:hidden"
+>
+  <div class="container mx-auto">
+    <div class="product-list_filters w-full lg:w-3/12 relative">
+    <form>
+      {%- for filter in collection.filters -%}
+
+        
+        <div class="filter-box pt-12">
+            <div>
+              <h4>{{ filter.label }}</h4>
+            </div>
+        
+          <div class="filter-items_wrapper border-b pb-10">
+            
+            {%- case filter.type -%}
+              {%- when 'boolean' -%}
+                <ul class="filter-items pt-8">
+                    <li>
+                      <label for="Filter-{{ filter.param_name }}-{{ filter.true_value.value }}">
+                      <input type="checkbox"
+                        name="{{ filter.param_name }}"
+                        value="{{ filter.true_value.value }}"
+                        id="Filter-{{ filter.param_name }}"
+                        {% if filter.true_value.active -%}checked{%- endif %}
+                        {% if filter.true_value.count == 0 and filter.true_value.active == false -%}disabled{%- endif -%}
+                      >{{ filter.true_value.label }}</label>
+                    </li>
+                    <li>
+                      <label for="Filter-{{ filter.param_name }}-{{ filter.false_value.value }}">
+                      <input type="checkbox"
+                        name="{{ filter.param_name }}"
+                        value="{{ filter.false_value.value }}"
+                        id="Filter-{{ filter.param_name }}"
+                        {% if filter.false_value.active -%}checked{%- endif %}
+                        {% if filter.false_value.count == 0 and filter.false_value.active == false -%}disabled{%- endif %}
+                      >{{ filter.false_value.label }}</label>
+                    </li>
+                </ul>
+
+                <div>
+                  <input type="submit" value="Apply" class="mt-4 red-bg color-white px-5 py-2 rounded w-auto inline-block cursor-pointer">
+                </div>
+              {%- when 'list' -%}
+
+                {% if filter.param_name == 'filter.v.option.size' %}
+                  <ul class="filter-items filter-checkbox pt-8 flex flex-wrap gap-3">
+                    {%- for filter_value in filter.values -%}
+                      <li class="border cursor-pointer filter-label_box" id="">
+                        <span>{{ filter_value.label }}</span>
+                        <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
+                        <input type="checkbox"
+                          name="{{ filter_value.param_name }}"
+                          value="{{ filter_value.value }}"
+                          id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                          {% if filter_value.active -%}checked{%- endif %}
+                          {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                        >
+                      </li>
+                      
+                    {%- endfor -%}
+                    
+                  </ul>
+
+                {% else %}
+                  <ul class="filter-items pt-8">
+                    {%- for filter_value in filter.values -%}
+                      <li>
+                        <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
+                        <input type="checkbox"
+                          name="{{ filter_value.param_name }}"
+                          value="{{ filter_value.value }}"
+                          id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                          {% if filter_value.active -%}checked{%- endif %}
+                          {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                        >
+                          <span>
+                            {%- case filter_value.display.type -%}
+
+                              {%- when 'colors' -%}
+                              
+                                {% liquid
+                                  assign size_limit = filter_value.display.value.size | at_most: 8
+                                  assign rotation = '0deg'
+                                  if size_limit == 2
+                                    assign rotation = '45deg'
+                                  endif
+
+                                  assign angle_increment = 360 | divided_by: size_limit
+                                  assign angle = 0
+                                %}
+                                {%- capture conic_gradient -%}
+                                  {%- for color in filter_value.display.value limit: size_limit -%}
+                                    {{ color }} {{ angle }}deg{%- assign angle = angle | plus: angle_increment %} {{ angle }}deg{%- unless forloop.last %}, {%- endunless -%}
+                                  {%- endfor -%}
+                                {%- endcapture -%}
+                                <span style="
+                                  width: 25px;
+                                  height: 25px;
+                                  border-radius: 50%;
+                                  display: flex;
+                                  justify-content: center;
+                                  align-items: center;
+                                  background: conic-gradient({{ conic_gradient }}); transform: rotateZ({{ rotation }});
+                                "></span>
+                              {%- when 'image' -%}
+                                {{
+                                  filter_value.display.value
+                                  | image_url: width: 25
+                                  | image_tag: alt: filter_value.display.value.alt
+                                }}
+                              {%- else -%}
+                                <span class="visual-display__child"></span>
+                            {%- endcase -%}
+                          </span>
+                          {{ filter_value.label }}
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+
+                {% endif %}
+
+              
+                <div>
+                  <input type="submit" value="Apply" class="mt-4 red-bg color-white px-5 py-2 rounded w-auto inline-block cursor-pointer">
+                  
+             
+                  {%- if filter.active_values.size > 0 -%}
+                    <p class="mt-4 color-red bg-white px-5 py-2 rounded w-auto inline-block cursor-default border border-red-600 ml-2"><a href="{{ filter.url_to_remove }}" class="color-red">Reset</a></p>
+                  {%- endif -%}
+         
+                </div>
+              {%- when 'price_range' -%}
+                <div class="filter-group-display__price-range">
+                  <div class="filter-group-display__price-range-from">
+                  
+                    <div class="price-range_wrapper pt-10">
+                      <div id="slider-range_mob" class="relative"></div>
+                      
+                      <div class="price-range_controller relative">
+                        <label for="Filter-{{ filter.min_value.param_name }}"></label>
+                        <input name="{{ filter.min_value.param_name }}"
+                          id="Filter-{{ filter.min_value.param_name }}" class="min_slider top-1 absolute left-0 color-red"
+                          {% if filter.min_value.value -%}
+                            value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                          {%- endif %}
+                          type="number"
+                          placeholder="0"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        >
+
+                        
+                        <label for="Filter-{{ filter.max_value.param_name }}" class=""></label>
+                          <input name="{{ filter.max_value.param_name }}"
+                          id="Filter-{{ filter.max_value.param_name }}" class="max_slider color-red absolute top-1 right-0 text-right"
+                          {% if filter.max_value.value -%}
+                            value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                          {%- endif %}
+                          type="number"
+                          placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          data-max-value="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                        >
+                      </div>
+                      
+                    </div> 
+
+                  </div>
+                </div>
+                
+                <div>
+                  <div class="filter-group-display__submit">
+                  <input type="submit" value="Apply" class="mt-10 red-bg color-white px-5 py-2 rounded w-auto inline-block cursor-pointer">
+
+                  
+                  </div>
+
+                  {%- if filter.active_values.size > 0 -%}
+                    <p class="mt-4 color-red bg-white px-5 py-2 rounded w-auto inline-block cursor-default border border-red-600 ml-2"><a href="{{ filter.url_to_remove }}" class="color-red">Reset</a></p>
+                  {%- endif -%}
+                </div>
+                
+            {%- endcase -%}
+          </div>
+          </div>
+      {%- endfor -%}
+
+      <div>
+        <p><a href="{{ collection.url }}?sort_by={{ collection.sort_by }}">Clear all</a></p>
+
+        {%- for filter in collection.filters -%}
+          {%- if filter.type == "price_range" -%}
+            {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+              <p>
+                <a href="{{ filter.url_to_remove }}">
+                  {%- assign min_value = filter.min_value.value | default: 0 -%}
+                  {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+                  {{ min_value | money }} - {{ max_value | money }} X
+                </a>
+              </p>
+            {%- endif -%}
+          {%- else -%}
+            {%- for filter_value in filter.active_values -%}
+              <p>
+                <a href="{{ filter_value.url_to_remove }}">
+                  {{ filter.label }}: {{ filter_value.label }} X
+                </a>
+              </p>
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </form>
+
+      <div class="close-filter_btn absolute top-3 right-2">
+        close <i class="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="overlay"></div>
+  
+
+
+
+
+
+<script>
+  // Range Slider
+  $(document).ready(function () {
+    $(function () {
+
+    function priceRangeSlide(element){
+      var parentDiv = $(element).parent();
+      var minVal = 0;
+      var maxVal = parseFloat($(parentDiv).find('input[name="filter.v.price.lte"]').data('max-value'));
+    
+        console.log(  $(parentDiv).find("input.min_slider"));
+        
+      $(element).slider({
+        range: true,
+        min: minVal,
+        max: maxVal,
+        values: [minVal, maxVal],
+        slide: function (event, ui) {
+          $(parentDiv).find("input.min_slider").val(ui.values[0]);
+          $(parentDiv).find("input.max_slider").val(ui.values[1]);
+        },
+      });
+
+      $("input.min_slider").val($(element).slider("values", 0));
+      $("input.max_slider").val($(element).slider("values", 1));
+    }
+      
+      
+      priceRangeSlide("#slider-range");
+      priceRangeSlide("#slider-range_mob");
+    });
+
+    // Size Filter
+
+        
+    $(".filter-label_box").each(function(){
+          
+      var checkbox = $(this).find('input[type=checkbox]');
+
+      if (checkbox.prop('checked')) {
+          $(this).addClass('active-filter_bg')
+        }
+        else{
+          $(this).removeClass('active-filter_bg')
+        }
+
+
+      $(this).on("click",function(){      
+       
+        checkbox.prop('checked', !checkbox.prop('checked'));
+
+        if (checkbox.prop('checked')) {
+          $(this).addClass('active-filter_bg')
+        }
+        else{
+          $(this).removeClass('active-filter_bg')
+        }
+      
+      })
+    })
+    
+
+  });
+</script>

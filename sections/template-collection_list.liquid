@@ -1,0 +1,251 @@
+ 
+<section id="breadcrumb" class="border-b py-6">
+  <div class="container mx-auto">
+    <div class="breadcrump-wrapper">
+      <ul class="flex gap-2">
+        <li class="opacity-50"><i class="fa-solid fa-house"></i> Home |</li>
+        <li>Products</li>
+        <li>All Collection</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="product-list" class="pt-16 pb-20 px-3 lg:px-0">
+  <div class="container mx-auto">
+    <div class="product-list_top">
+      <h2>Products</h2>
+    </div>
+
+    <div class="product-list_main flex flex-col lg:flex-row gap-8">
+      <div class="product-list_filters w-full lg:w-3/12 hidden lg:block">
+        <div class="filter-box pt-12">
+          <h4>Categories</h4>
+
+          <div class="filter-items_wrapper border-b pb-10">
+            <ul class="filter-items pt-8">
+
+            {% for collection in collections %}
+              {% unless collection.handle == 'frontpage' %}
+              <li>
+                <input type="checkbox" name="New" id="New" />
+                <label for="New">{{ collection.title }}</label>
+              </li>
+              {% endunless %}
+            {% endfor %}
+              
+            </ul>
+          </div>
+        </div>
+
+        <div class="filter-box pt-12">
+          <h4>Brands</h4>
+
+          <div class="filter-items_wrapper border-b pb-10">
+            <ul class="filter-items pt-8">
+
+            {% for vendor in shop.vendors %}
+              <li>
+                <input type="checkbox" name="New" id="New" />
+                <label for="New">{{ vendor }}</label>
+              </li>
+            {% endfor %}
+              
+            </ul>
+          </div>
+        </div>
+
+        <div class="filter-box pt-12">
+          <h4>Size</h4>
+
+          <div class="filter-items_wrapper border-b pb-10">
+            <ul
+              class="filter-items filter-checkbox pt-8 flex flex-wrap gap-3"
+            >
+              <li class="border">
+                <span>XS</span>
+              </li>
+              <li class="border">
+                <span>S</span>
+              </li>
+              <li class="active-filter_check border">
+                <span>M</span>
+              </li>
+              <li class="border">
+                <span>L</span>
+              </li>
+              <li class="border">
+                <span>XL</span>
+              </li>
+              <li class="border">
+                <span>XXL</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="filter-box pt-12">
+          <h4>Price</h4>
+
+          <div class="price-range_wrapper pt-10">
+            <div id="slider-range"></div>
+            <label for="min">Min:</label>
+            <input type="text" id="min" readonly />
+            <label for="max">Max:</label>
+            <input type="text" id="max" readonly />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-product-list_wrapper w-full lg:w-9/12">
+        <div
+          class="grid-header flex-col flex md:flex-row justify-between border-b border-b-black-20 py-4 md:pb-7"
+        >
+          <div class="grid-header_left flex items-center gap-5">
+            <h6>Showing 1 - 15 of 150 results.</h6>
+          </div>
+          <div class="grid-header_right">
+            <h6 class="inline">Sort By</h6>
+            <select name="sort" id="" class="p-4 border">
+              <option value="">All Products</option>
+              <option value="">New</option>
+              <option value="">Low Price</option>
+              <option value="">High Price</option>
+            </select>
+            <p class="lg:hidden mob-filter_btn">
+              <i class="fa-solid fa-filter"></i> Filters
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="grid-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 pt-16"
+        >
+          {% for collection in collections %}
+              {% unless collection.handle == 'frontpage' %}
+                {% paginate collection.products by 12 %}
+                  {% for product in collection.products %}
+                    {% render 'product-card', product_item: product %}
+                  {% endfor %}
+                {% endpaginate %}
+              {% endunless %}
+          {% endfor %}
+            
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section
+  id="mobile-filters"
+  class="fixed bottom-0 left-0 w-full h-56 p-8 border-r-6 bg-white overflow-y-auto shadow-lg z-50 lg:hidden"
+>
+  <div class="container mx-auto">
+    <div class="product-list_filters w-full lg:w-3/12 relative">
+      <div class="filter-box pt-12">
+        <h4>Categories</h4>
+
+        <div class="filter-items_wrapper border-b pb-10">
+          <ul class="filter-items pt-8">
+            {% for collection in collections %}
+              {% unless collection.handle == 'frontpage' %}
+                <li>
+                  <input type="checkbox" name="New" id="New" />
+                  <label for="New">{{ collection.title }}</label>
+                </li>
+              {% endunless %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="filter-box pt-12">
+        <h4>Brands</h4>
+
+        <div class="filter-items_wrapper border-b pb-10">
+          <ul class="filter-items pt-8">
+            {% for vendor in shop.vendors %}
+              <li>
+                <input type="checkbox" name="New" id="New" />
+                <label for="New">{{ vendor }}</label>
+              </li>
+            {% endfor %}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="filter-box pt-12">
+        <h4>Size</h4>
+
+        <div class="filter-items_wrapper border-b pb-10">
+          <ul
+            class="filter-items filter-checkbox pt-8 flex flex-wrap gap-3"
+          >
+            <li class="border">
+              <span>XS</span>
+            </li>
+            <li class="border">
+              <span>S</span>
+            </li>
+            <li class="active-filter_check border">
+              <span>M</span>
+            </li>
+            <li class="border">
+              <span>L</span>
+            </li>
+            <li class="border">
+              <span>XL</span>
+            </li>
+            <li class="border">
+              <span>XXL</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="filter-box pt-12">
+        <h4>Price</h4>
+
+        <div class="price-range_wrapper pt-10">
+          <div id="slider-range"></div>
+          <label for="min">Min:</label>
+          <input type="text" id="min" readonly />
+          <label for="max">Max:</label>
+          <input type="text" id="max" readonly />
+        </div>
+      </div>
+
+      <div class="close-filter_btn absolute top-3 right-2">
+        close <i class="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="overlay"></div>
+  
+<script>
+  // Range Slider
+  // $(document).ready(function () {
+  //   $(function () {
+  //     var minVal = 0;
+  //     var maxVal = 100;
+
+  //     $("#slider-range").slider({
+  //       range: true,
+  //       min: minVal,
+  //       max: maxVal,
+  //       values: [minVal, maxVal],
+  //       slide: function (event, ui) {
+  //         $("#min").val(ui.values[0]);
+  //         $("#max").val(ui.values[1]);
+  //       },
+  //     });
+
+  //     $("#min").val($("#slider-range").slider("values", 0));
+  //     $("#max").val($("#slider-range").slider("values", 1));
+  //   });
+  // });
+</script>

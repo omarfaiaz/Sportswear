@@ -11,7 +11,7 @@
         >
           <div class="product-gallery_thumb xl:w-2/12 h-auto xl:h-96">
             
-            
+
             {% for image in product.images %}
                 <div class="product-thumb_slide h-32 cursor-pointer">
                     <img
@@ -45,7 +45,7 @@
             {{ product.metafields.custom.product_feature | metafield_tag  }}
           </p>
 
-          {% unless product.has_only_default_variant %}
+          {% comment %} {% unless product.has_only_default_variant %}
             {% for option in product.options_with_values %}
               <p> <strong>{{ option.name }} </strong> </p>
               
@@ -57,7 +57,7 @@
                 
               {% endfor %}
             {% endfor %}
-          {% endunless %}
+          {% endunless %} {% endcomment %}
           
           <div class="cart-box border p-4">
             {% form 'product', product %}
@@ -80,6 +80,7 @@
               <button class="button product-add" type="submit">Add to Cart</button>
           {% endform %}
           </div>
+
           
 
           {% comment %} <form action="/cart/add" method="post" enctype="multipart/form-data" id="AddToCartForm">

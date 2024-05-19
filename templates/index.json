@@ -1,8 +1,42 @@
 {
-    "sections": {
-       "hero":{
-        "type": "template-hero"
-       }
+  "sections": {
+    "hero": {
+      "type": "template-hero"
     },
-    "order": ["hero"]
+    "featured-categories": {
+      "type": "featured-cat"
+    },
+    "featured-products": {
+      "type": "featured-product"
+    },
+    "promo-banner": {
+      "type": "promo-banner"
+    },
+    "best-seller": {
+      "type": "best-seller"
+    },
+    "faq": {
+      "type": "template-faq"
+    },
+    "icon-boxes": {
+      "type": "template-icon_box"
+    },
+    "post-grid": {
+      "type": "template-blog_grid"
+    },
+    "cart-drawer":{
+        "type": "template-cart-drawer"
+    }
+  },
+  "order": [
+    "hero",
+    "featured-categories",
+    "featured-products",
+    "promo-banner",
+    "best-seller",
+    "faq",
+    "icon-boxes",
+    "post-grid",
+    "cart-drawer"
+  ]
 }

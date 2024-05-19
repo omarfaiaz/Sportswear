@@ -1,0 +1,21 @@
+<section id="featured-products" class="py-12">
+    <div class="container mx-auto px-3 xl:px-0">
+
+    <h2>Search result for <i class="color-red">{{ search.terms  }}</i></h2>
+        {% paginate search.results by 10 %}
+        
+            {% if search.performed %}
+                <div class="grid-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 pt-16">
+                    {% for item in search.results %}
+                        {% render 'product-card', product_item: item %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        
+            {% if paginate.pages > 1 %}{{ paginate | default_pagination }}{% endif %}
+        {% endpaginate %}
+    </div>
+</section>
+
+
+  

@@ -7,27 +7,29 @@
         <div
         class="grid-header flex-col flex md:flex-row justify-between border-b border-b-black-20 py-4 md:pb-7"
         >
+        {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
         <div class="grid-header_left flex gap-5">
             <h3>Best Seller</h3>
         </div>
         <div class="grid-header_right">
-            <h6 class="inline">Sort By</h6>
-            <select name="sort" id="" class="p-4 border">
-            <option value="">All Products</option>
-            <option value="">New</option>
-            <option value="">Low Price</option>
-            <option value="">High Price</option>
+            <select id="home-sort-by" class="border p-2 lg:py-2 lg:px-3 border-gray-600">
+                {% for option in collections.all.sort_options %}
+                    <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>
+                        {{ option.name }}
+                    </option>
+                {% endfor %}
             </select>
         </div>
         </div>
-
-        <div
-        class="grid-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 pt-16"
-        >
-        {% for product in selected_collection.products limit: prodcuct_limit %}
-            {% render 'product-card', product_item: product %}
-        {% endfor %}
+        
+        <div id="best-seller_grid">
+            <div class="grid-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 pt-16">
+                {% for product in collections.all.products limit: 4 %}
+                    {% render 'product-card', product_item: product %}
+                {% endfor %}
+            </div>
         </div>
+        
 
         <div class="feauted-cat-bottom text-center mt-20">
         <div

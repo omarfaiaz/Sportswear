@@ -18,28 +18,46 @@
 
       <div class="main-header flex justify-between py-10">
         <div class="menu-left w-1/3 hidden md:block">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input
-            type="text"
-            name="search"
-            id=""
-            placeholder="Enter your search keywords ..."
-          />
+          
+          <form action="{{ routes.search_url }}">
+            <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                name="q"
+                id="search"
+                value="{{ search.terms | escape }}"
+                placeholder="Enter your search keywords ..."
+              />
+            <input type="hidden" name="type" value="product,page" />
+            <input type="hidden" name="options[unavailable_products]" value="hide" />
+            <input type="hidden" name="options[prefix]" value="last" />
+            <input type="submit" value="Search" />
+          </form>
+
         </div>
         <div class="menu-center w-1/3 flex justify-center">
-          <img
-            src="{{ section.settings.logo |  image_url: width:300 }}"
-            alt="logo"
-            class="logo object-contain"
-          />
+
+          <a href="{{ routes.root_url }}"><img
+          src="{{ section.settings.logo |  image_url: width:300 }}"
+          alt="logo"
+          class="logo object-contain"
+        /></a>
          
          
         </div>
         <div class="menu-right w-1/3 text-right">
-
-        <a href="{{ routes.account_url }}"><i class="fa-regular fa-user"></i> SIGN IN |</a>
-           
+        {% if customer %}
+          <a href="{{ routes.account_url }}"><i class="fa-regular fa-user"></i> |</a>
           <a href="{{ routes.cart_url }}"><i class="fa-solid fa-cart-shopping"></i></a>
+          
+          {% else %}
+          <a href="{{ routes.account_register_url }}"><i class="fa-regular fa-user"></i> SIGN IN |</a>
+          <a href="{{ routes.account_login_url }}">LOG IN</a>
+        {% endif %}
+
+      
+           
+          
         </div>
       </div>
     </div>
@@ -150,6 +168,7 @@
       "label": "Add your location",
       "default":"XYZ street, London, Uk"
     },
+
     {
       "type" : "image_picker",
       "id": "logo",

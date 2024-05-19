@@ -259,8 +259,11 @@
                     let html_div = document.createElement('div');
                     html_div.innerHTML = data;
 
+                    
                     let html_dom = html_div.querySelector('#ProductGridContainer').innerHTML;
+                    console.log(html_dom);
                     document.querySelector('#ProductGridContainer').innerHTML = html_dom;
+
                     // update url without refreshing the page 
                     history.replaceState(null, null, '?sort_by=' + this.sort);
                     })
@@ -290,15 +293,12 @@
             <div
               class="grid-products grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-10 pt-16" 
             >
-              {% assign vendor = 'Reebook' %}
               {% for product in collection.products %}
-               
-                {% comment %} {% if product.vendor == 'Gladiator' %} {% endcomment %}
+                           
                   {% render 'product-card', product_item: product %} 
-                {% comment %} {% endif %} {% endcomment %}
-                                
+              
               {% endfor %}
-                                                
+                            
             </div>
             {% if paginate.pages > 1 %}
               {{ paginate | default_pagination }}
